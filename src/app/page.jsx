@@ -2,7 +2,7 @@ import { AboutPageContent } from '@/components/AboutPageContent'
 
 export const metadata = {
   description:
-    'I’m Spencer Sharp. I live in New York City, where I design the future.',
+    'Growth marketer with 12+ years’ experience. I help startups grow revenue using AI—free resources and a growth audit to map where your workflows are leaving growth on the table.',
 }
 
 export default function Home() {

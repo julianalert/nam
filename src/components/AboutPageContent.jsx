@@ -69,7 +69,7 @@ Growth marketer for 12+ years. Co-founder & CMO of a fintech that I grew as the 
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Get a free AI audit
+                Get my free growth audit
               </Button>
             </div>
           )}

@@ -1,10 +1,16 @@
 import { AboutPageContent } from '@/components/AboutPageContent'
+import { ProjectsSection } from '@/components/ProjectsGrid'
 
 export const metadata = {
   description:
-    'Growth marketer with 12+ years’ experience. I help startups grow revenue using AI—free resources and a growth audit to map where your workflows are leaving growth on the table.',
+    'Growth marketer for 12+ years. Co-founder & CMO who scaled a fintech from $10k to $2M ARR as sole marketer—sharing the AI systems behind it. Free resources; one call maps where your workflows leave growth on the table.',
 }
 
 export default function Home() {
-  return <AboutPageContent showAuditCta />
+  return (
+    <>
+      <AboutPageContent showAuditCta />
+      <ProjectsSection showHeader={false} />
+    </>
+  )
 }

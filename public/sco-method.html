@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The SCO Method — Get Better AI Output Every Time</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0c0c;
+    --surface: #161616;
+    --surface-2: #1e1e1e;
+    --border: #2a2a2a;
+    --text: #e8e4df;
+    --text-muted: #8a8580;
+    --accent: #f0c040;
+    --accent-dim: #f0c04020;
+    --system: #60b0f0;
+    --context: #e86040;
+    --output: #50d080;
+    --system-dim: #60b0f015;
+    --context-dim: #e8604015;
+    --output-dim: #50d08015;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 100px 0 80px;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .hero h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(42px, 7vw, 64px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 span {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero .subtitle {
+    color: var(--text-muted);
+    font-size: 18px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* NAV */
+  .toc {
+    padding: 60px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .toc-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .toc-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .toc-list a {
+    color: var(--text);
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: background 0.2s;
+    font-size: 15px;
+  }
+
+  .toc-list a:hover { background: var(--surface); }
+
+  .toc-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    width: 24px;
+    flex-shrink: 0;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 80px 0 60px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  section:last-of-type { border-bottom: none; }
+
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(30px, 5vw, 40px);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 32px;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 40px 0 16px;
+  }
+
+  p { margin-bottom: 18px; }
+
+  /* SCO CARDS */
+  .sco-grid {
+    display: grid;
+    gap: 16px;
+    margin: 32px 0;
+  }
+
+  .sco-card {
+    border-radius: 12px;
+    padding: 28px;
+    border: 1px solid var(--border);
+  }
+
+  .sco-card.system { background: var(--system-dim); border-color: #60b0f030; }
+  .sco-card.context { background: var(--context-dim); border-color: #e8604030; }
+  .sco-card.output { background: var(--output-dim); border-color: #50d08030; }
+
+  .sco-card .letter {
+    font-family: 'Instrument Serif', serif;
+    font-size: 48px;
+    font-style: italic;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .sco-card.system .letter { color: var(--system); }
+  .sco-card.context .letter { color: var(--context); }
+  .sco-card.output .letter { color: var(--output); }
+
+  .sco-card .card-title {
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .sco-card p { color: var(--text-muted); font-size: 15px; margin-bottom: 0; }
+
+  /* CODE / PROMPT BLOCKS */
+  .prompt-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin: 24px 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    color: var(--text-muted);
+  }
+
+  .prompt-block .tag-s { color: var(--system); }
+  .prompt-block .tag-c { color: var(--context); }
+  .prompt-block .tag-o { color: var(--output); }
+  .prompt-block .comment { color: #555; }
+  .prompt-block .val { color: var(--text); }
+
+  /* COMPARISON */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 28px 0;
+  }
+
+  @media (max-width: 600px) {
+    .compare { grid-template-columns: 1fr; }
+  }
+
+  .compare-bad, .compare-good {
+    padding: 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .compare-bad {
+    background: #2a1515;
+    border: 1px solid #4a2020;
+  }
+
+  .compare-good {
+    background: #152a18;
+    border: 1px solid #204a25;
+  }
+
+  .compare-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .compare-bad .compare-label { color: #e06050; }
+  .compare-good .compare-label { color: #50d080; }
+
+  /* CHECKLIST */
+  .checklist {
+    list-style: none;
+    margin: 24px 0;
+  }
+
+  .checklist li {
+    padding: 10px 0;
+    padding-left: 28px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+  }
+
+  .checklist li:last-child { border-bottom: none; }
+
+  .checklist li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* STEP BLOCKS */
+  .step {
+    display: flex;
+    gap: 20px;
+    margin: 28px 0;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 36px;
+    font-style: italic;
+    color: var(--accent);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 36px;
+    padding-top: 4px;
+  }
+
+  .step-content h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .step-content p {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin-bottom: 0;
+  }
+
+  /* KEY POINT */
+  .key-point {
+    border-left: 3px solid var(--accent);
+    padding: 16px 24px;
+    margin: 32px 0;
+    background: var(--accent-dim);
+    border-radius: 0 8px 8px 0;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 32px 0;
+    flex-wrap: wrap;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+  }
+
+  .flow-node {
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+  }
+
+  .flow-node.s { background: var(--system-dim); color: var(--system); border: 1px solid #60b0f030; }
+  .flow-node.c { background: var(--context-dim); color: var(--context); border: 1px solid #e8604030; }
+  .flow-node.o { background: var(--output-dim); color: var(--output); border: 1px solid #50d08030; }
+
+  .flow-arrow { color: var(--text-muted); font-size: 18px; }
+
+  /* MEMORY TABLE */
+  .memory-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 28px 0;
+  }
+
+  @media (max-width: 600px) {
+    .memory-grid { grid-template-columns: 1fr; }
+  }
+
+  .memory-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .memory-item h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .memory-item p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 0;
+    line-height: 1.6;
+  }
+
+  /* FOOTER */
+  .footer {
+    padding: 60px 0;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* SMOOTH SCROLL */
+  html { scroll-behavior: smooth; }
+
+  /* SUBTLE ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero h1, .hero .subtitle {
+    animation: fadeUp 0.6s ease-out both;
+  }
+
+  .hero .subtitle { animation-delay: 0.15s; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>The <span>SCO</span> Method</h1>
+    <p class="subtitle">System, Context, Output — the only framework you need to get consistently great results from AI.</p>
+  </div>
+
+  <!-- TOC -->
+  <nav class="toc">
+    <div class="toc-label">Contents</div>
+    <ul class="toc-list">
+      <li><a href="#problem"><span class="toc-num">01</span> The problem with how you use AI</a></li>
+      <li><a href="#framework"><span class="toc-num">02</span> The SCO framework explained</a></li>
+      <li><a href="#system"><span class="toc-num">03</span> S — System: define the steps</a></li>
+      <li><a href="#context"><span class="toc-num">04</span> C — Context: feed the knowledge</a></li>
+      <li><a href="#output"><span class="toc-num">05</span> O — Output: describe the result</a></li>
+      <li><a href="#action"><span class="toc-num">06</span> Putting it together</a></li>
+      <li><a href="#memory"><span class="toc-num">07</span> Making it compound: memory packs</a></li>
+      <li><a href="#templates"><span class="toc-num">08</span> Ready-to-use templates</a></li>
+    </ul>
+  </nav>
+
+  <!-- 01 PROBLEM -->
+  <section id="problem">
+    <div class="section-num">01</div>
+    <h2>The problem</h2>
+    <p>Most people use AI like this: open ChatGPT, type a prompt, get a mediocre answer, close the tab. Tomorrow, repeat from scratch. Nothing compounds. Nothing improves. The output stays generic.</p>
+    <p>This happens because you only describe <strong>what you want</strong> — you never describe <strong>how to think about it</strong> or <strong>what the AI needs to know</strong>.</p>
+    <div class="compare">
+      <div class="compare-bad">
+        <span class="compare-label">What most people do</span>
+        "Write me a LinkedIn post about productivity."
+      </div>
+      <div class="compare-good">
+        <span class="compare-label">What works</span>
+        Give the AI a process to follow, knowledge to work with, and a clear spec for the deliverable.
+      </div>
+    </div>
+    <p>The difference is a framework called SCO.</p>
+  </section>
+
+  <!-- 02 FRAMEWORK -->
+  <section id="framework">
+    <div class="section-num">02</div>
+    <h2>The SCO framework</h2>
+    <p>Every task you give to AI has three layers. When you provide all three, the output quality jumps dramatically.</p>
+    <div class="sco-grid">
+      <div class="sco-card system">
+        <div class="letter">S</div>
+        <div class="card-title">System</div>
+        <p>The steps the AI must follow to complete the task. A repeatable process, not a vague ask.</p>
+      </div>
+      <div class="sco-card context">
+        <div class="letter">C</div>
+        <div class="card-title">Context</div>
+        <p>Everything the AI needs to know to do it like you would: brand, audience, tone, constraints, examples.</p>
+      </div>
+      <div class="sco-card output">
+        <div class="letter">O</div>
+        <div class="card-title">Output</div>
+        <p>A precise description of the final deliverable: format, structure, length, style, what good looks like.</p>
+      </div>
+    </div>
+    <div class="flow">
+      <span class="flow-node s">System</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node c">Context</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node o">Output</span>
+    </div>
+    <div class="key-point">Most people only provide O (a vague output request). That's why results are inconsistent. You need all three.</div>
+  </section>
+
+  <!-- 03 SYSTEM -->
+  <section id="system">
+    <div class="section-num">03</div>
+    <h2>S — System</h2>
+    <p>The System is the sequence of steps the AI should follow. Every repeatable task has a process — you just need to make it explicit. When you do, the AI stops guessing and starts executing.</p>
+
+    <h3>How to write a system</h3>
+    <p>Break your task into 4–8 sequential steps. Think: if I were delegating this to a smart person on day one, what steps would I tell them to follow?</p>
+
+    <div class="prompt-block"><span class="comment">// Example: System for writing a newsletter</span>
+
+<span class="tag-s">SYSTEM:</span>
+<span class="val">1. Read the topic and identify one core takeaway
+2. Find a counterintuitive angle or personal observation
+3. Write a 2-sentence hook that creates curiosity
+4. Structure the body as: story → lesson → actionable tip
+5. End with a single, clear call-to-action
+6. Review for unnecessary filler — cut anything generic</span></div>
+
+    <p>The system never changes between sessions. Once you write it, you reuse it every time. This is why your output starts compounding — the process is locked in.</p>
+  </section>
+
+  <!-- 04 CONTEXT -->
+  <section id="context">
+    <div class="section-num">04</div>
+    <h2>C — Context</h2>
+    <p>Context is the reason your AI output sounds generic. Without it, the AI defaults to average. With it, the output sounds like <em>you</em>.</p>
+
+    <h3>What to include in context</h3>
+    <ul class="checklist">
+      <li><strong>Brand identity</strong> — who you are, what you stand for, your positioning</li>
+      <li><strong>Audience</strong> — who you're talking to, their problems, their language, their sophistication level</li>
+      <li><strong>Tone rules</strong> — direct/casual/formal, short sentences or long, what to avoid</li>
+      <li><strong>Examples</strong> — 2–3 samples of output you consider "good"</li>
+      <li><strong>Constraints</strong> — word count, forbidden phrases, platform requirements</li>
+      <li><strong>Goal</strong> — what this piece is meant to achieve (sell, educate, entertain, convert)</li>
+    </ul>
+
+    <div class="prompt-block"><span class="comment">// Example: Context for a SaaS founder's content</span>
+
+<span class="tag-c">CONTEXT:</span>
+<span class="val">Brand: Solo SaaS founder, building in public. Anti-hype, pro-substance.
+Audience: Developers and indie hackers, technically savvy, allergic to marketing-speak.
+Tone: Direct, informal, slightly contrarian. Short sentences. No emojis. No buzzwords.
+Constraints: LinkedIn posts, max 200 words. Always end with a question.
+Goal: Build authority and start conversations.</span></div>
+
+    <div class="key-point">Store your context in a document you can paste into any conversation. This is your "context pack" — it's the single highest-ROI thing you'll build.</div>
+  </section>
+
+  <!-- 05 OUTPUT -->
+  <section id="output">
+    <div class="section-num">05</div>
+    <h2>O — Output</h2>
+    <p>The Output is the deliverable spec. Don't just say "write a blog post." Describe exactly what the finished product looks like.</p>
+
+    <h3>What to specify</h3>
+    <ul class="checklist">
+      <li><strong>Format</strong> — blog post, email, script, carousel, thread, landing page copy</li>
+      <li><strong>Structure</strong> — hook → body → CTA, or intro → 3 sections → conclusion</li>
+      <li><strong>Length</strong> — word count, number of slides, number of variations</li>
+      <li><strong>Style markers</strong> — "use subheadings," "include one concrete example per point," "end with a question"</li>
+      <li><strong>Variations</strong> — "give me 3 versions with different hooks"</li>
+    </ul>
+
+    <div class="prompt-block"><span class="comment">// Example: Output spec for LinkedIn posts</span>
+
+<span class="tag-o">OUTPUT:</span>
+<span class="val">Produce 3 LinkedIn post variations.
+Each must be:
+- Under 200 words
+- Start with a bold first line (no "I" as first word)
+- Use line breaks for readability
+- Include one specific example or number
+- End with an open question
+- No hashtags</span></div>
+  </section>
+
+  <!-- 06 PUTTING IT TOGETHER -->
+  <section id="action">
+    <div class="section-num">06</div>
+    <h2>Putting it together</h2>
+    <p>Here's what a complete SCO prompt looks like. Compare this with how you usually prompt AI — the difference in output quality is massive.</p>
+
+    <div class="prompt-block"><span class="tag-s">SYSTEM:</span>
+<span class="val">1. Read the topic below
+2. Identify a counterintuitive take or underrated angle
+3. Write a hook that challenges a common belief
+4. Structure as: bold claim → supporting evidence → personal take → question
+5. Cut all filler words and generic statements</span>
+
+<span class="tag-c">CONTEXT:</span>
+<span class="val">Brand: Marketing consultant for B2B SaaS. 10 years experience.
+Audience: CMOs and VPs of Marketing. Time-poor, skeptical of trends.
+Tone: Direct, confident, no fluff. Conversational but expert.
+Constraints: LinkedIn post, max 180 words. No emojis. No hashtags.</span>
+
+<span class="tag-o">OUTPUT:</span>
+<span class="val">3 LinkedIn post variations on the topic: "Why most content strategies fail."
+Each variation must use a different hook angle.
+Format: plain text, line breaks between paragraphs.</span></div>
+
+    <h3>The 5-minute exercise</h3>
+    <p>Pick one task you do every week. Write its S, C, and O. Save it. Paste it into your next AI conversation instead of writing a one-line prompt. Notice the difference.</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>Pick one repeating task</h4>
+        <p>Newsletter, social posts, email drafts, keyword research, content briefs — anything you do weekly.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>Write the System</h4>
+        <p>Break it into 4–8 steps. What's the process a competent person would follow?</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>Write the Context</h4>
+        <p>Brand, audience, tone, examples, constraints. Save this as a reusable "context pack."</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h4>Define the Output</h4>
+        <p>Format, structure, length, style. Be specific about what the deliverable looks like.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 MEMORY -->
+  <section id="memory">
+    <div class="section-num">07</div>
+    <h2>Making it compound</h2>
+    <p>The real leverage happens when you stop rewriting context every session. Build a "memory pack" — a document you maintain and paste at the start of every AI conversation.</p>
+
+    <div class="memory-grid">
+      <div class="memory-item">
+        <h4>Brand memory</h4>
+        <p>Your identity, positioning, values, what you stand for and against. 10–15 bullet points.</p>
+      </div>
+      <div class="memory-item">
+        <h4>Audience memory</h4>
+        <p>Who they are, what they want, what they fear, the words they use, their sophistication level.</p>
+      </div>
+      <div class="memory-item">
+        <h4>Style preferences</h4>
+        <p>Your do's and don'ts. "Short sentences." "No corporate speak." "Always give examples." "Prefer frameworks."</p>
+      </div>
+      <div class="memory-item">
+        <h4>Feedback log</h4>
+        <p>After each session, add one line: "too formal," "needs more examples," "hook was weak." Your context pack improves over time.</p>
+      </div>
+    </div>
+
+    <div class="key-point">Your memory pack is the difference between starting from zero every day and having an AI that gets better every week.</div>
+
+    <p>Store it in a notes app, a Notion page, or a plain text file. The format doesn't matter — consistency does. Update it after each session with one line of feedback, and your outputs will compound.</p>
+  </section>
+
+  <!-- 08 TEMPLATES -->
+  <section id="templates">
+    <div class="section-num">08</div>
+    <h2>Ready-to-use templates</h2>
+    <p>Copy these, fill in your context, and use them immediately.</p>
+
+    <h3>Newsletter writer</h3>
+    <div class="prompt-block"><span class="tag-s">SYSTEM:</span>
+<span class="val">1. Read topic
+2. Find one surprising insight or contrarian take
+3. Write hook (2 sentences max — create curiosity)
+4. Body: story or observation → lesson → practical tip
+5. CTA: one clear next step
+6. Cut everything that doesn't earn its place</span>
+
+<span class="tag-c">CONTEXT:</span>
+<span class="val">[Paste your memory pack here]</span>
+
+<span class="tag-o">OUTPUT:</span>
+<span class="val">One newsletter draft, 400–600 words.
+Structure: hook → body → tip → CTA.
+Tone: conversational, direct. No intro filler like "In today's issue..."</span></div>
+
+    <h3>Content repurposer</h3>
+    <div class="prompt-block"><span class="tag-s">SYSTEM:</span>
+<span class="val">1. Read the source content below
+2. Extract the 3 strongest standalone ideas
+3. For each idea, write it as a self-contained short-form piece
+4. Adapt structure and hook to each platform
+5. Ensure each piece works without knowing the original</span>
+
+<span class="tag-c">CONTEXT:</span>
+<span class="val">[Paste your memory pack here]</span>
+
+<span class="tag-o">OUTPUT:</span>
+<span class="val">From the source content, produce:
+- 2 LinkedIn posts (under 200 words each)
+- 1 Twitter/X thread (5–7 tweets)
+- 1 short-form video script (60 seconds)
+Each with a different angle. No repetition between formats.</span></div>
+
+    <h3>Research brief</h3>
+    <div class="prompt-block"><span class="tag-s">SYSTEM:</span>
+<span class="val">1. Analyze the topic or URL provided
+2. Identify key themes, arguments, and data points
+3. Note what's missing or underexplored
+4. Suggest 3 content angles based on gaps
+5. Prioritize by audience relevance</span>
+
+<span class="tag-c">CONTEXT:</span>
+<span class="val">[Paste your memory pack here]</span>
+
+<span class="tag-o">OUTPUT:</span>
+<span class="val">A research brief with:
+- Summary (3–5 sentences)
+- Key insights (bullet points)
+- 3 content angle recommendations with rationale
+- Suggested sources to explore further</span></div>
+  </section>
+
+  <div class="footer">
+    <p>Built with the SCO Method. No fluff.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

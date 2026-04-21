@@ -9,7 +9,7 @@ export const metadata = {
     template: '%s · Not Another Marketer',
   },
   description:
-    'Growth marketer with 12+ years’ experience. I help startups grow revenue using AI—free resources and a growth audit to find where your workflows leave money on the table.',
+    'Growth marketer for 12+ years. Co-founder & CMO who scaled a fintech from $10k to $2M ARR as sole marketer—sharing the AI systems behind it. Free resources; one call maps where your workflows leave growth on the table.',
   alternates: {
     types: {
       'application/rss+xml': `${process.env.NEXT_PUBLIC_SITE_URL}/feed.xml`,

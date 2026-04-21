@@ -48,19 +48,19 @@ export function AboutPageContent({ showAuditCta = false }) {
         </div>
         <div className="lg:order-first lg:row-span-2">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-            I help startups grow their revenue using AI.
+            I help startups grow and scale faster using AI
           </h1>
           <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
             <p>
-            
-Growth marketer for 12+ years. Co-founder & CMO of a fintech that I grew as the sole marketer from $10k to $2M ARR in two years. I'm sharing the AI systems I built to do it.
-
-
+              Growth marketer for 12+ years. Co-founder &amp; CMO of a fintech
+              that I grew as the sole marketer from $10k to $2M ARR in two
+              years. I’m sharing the AI systems I built to do it.
             </p>
             <p>
-            Browse the free resources on this site, or let's talk. One call is enough to map out where your workflows are leaving growth on the table.
+              Browse the free resources on this site, or let’s talk. One call
+              is enough to map out where your workflows are leaving growth on the
+              table.
             </p>
-           
           </div>
           {showAuditCta && (
             <div className="mt-10">
@@ -69,8 +69,12 @@ Growth marketer for 12+ years. Co-founder & CMO of a fintech that I grew as the 
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Get my free growth audit
+                Book a strategy call (free)
               </Button>
+              <p className="mt-3 max-w-md text-sm italic text-zinc-600 dark:text-zinc-400">
+                One call and I’ll show you exactly where your pipeline is
+                breaking, and what we build first.
+              </p>
             </div>
           )}
         </div>

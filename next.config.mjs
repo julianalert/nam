@@ -8,6 +8,9 @@ const nextConfig = {
       { source: '/oldHome', destination: '/oldhome', permanent: true },
     ]
   },
+  async rewrites() {
+    return [{ source: '/sco-method', destination: '/sco-method.html' }]
+  },
   outputFileTracingIncludes: {
     '/articles/*': ['./src/app/articles/**/*.mdx'],
   },
